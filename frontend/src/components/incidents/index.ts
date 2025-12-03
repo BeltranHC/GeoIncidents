@@ -1,0 +1,1 @@
+export { ReportIncidentModal } from './ReportIncidentModal';
