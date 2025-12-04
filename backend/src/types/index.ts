@@ -36,6 +36,7 @@ export interface HeatmapData {
   latitude: number;
   longitude: number;
   intensity: number;
+  severity: string;
 }
 
 export interface IncidentFilter {

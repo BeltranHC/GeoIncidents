@@ -66,7 +66,7 @@ export const ReportIncidentModal: React.FC<ReportIncidentModalProps> = ({
           </label>
           <select
             {...register('categoryId', { required: 'Selecciona una categoría' })}
-            className="w-full rounded-lg border border-gray-300 px-4 py-2.5 focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
+            className="w-full rounded-lg border border-gray-300 bg-white text-gray-900 px-4 py-2.5 focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
           >
             <option value="">Seleccionar...</option>
             {categories.map((category) => (
@@ -98,7 +98,7 @@ export const ReportIncidentModal: React.FC<ReportIncidentModalProps> = ({
           </label>
           <textarea
             {...register('description', { required: 'La descripción es requerida' })}
-            className="w-full rounded-lg border border-gray-300 px-4 py-2.5 focus:ring-2 focus:ring-primary-500 focus:border-primary-500 min-h-[100px]"
+            className="w-full rounded-lg border border-gray-300 bg-white text-gray-900 px-4 py-2.5 focus:ring-2 focus:ring-primary-500 focus:border-primary-500 min-h-[100px]"
             placeholder="Proporciona detalles del incidente..."
           />
           {errors.description && (
@@ -132,7 +132,7 @@ export const ReportIncidentModal: React.FC<ReportIncidentModalProps> = ({
           <input
             type="datetime-local"
             {...register('incidentDate', { required: 'La fecha es requerida' })}
-            className="w-full rounded-lg border border-gray-300 px-4 py-2.5 focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
+            className="w-full rounded-lg border border-gray-300 bg-white text-gray-900 px-4 py-2.5 focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
           />
           {errors.incidentDate && (
             <p className="mt-1 text-sm text-danger-600">{errors.incidentDate.message}</p>
@@ -141,29 +141,41 @@ export const ReportIncidentModal: React.FC<ReportIncidentModalProps> = ({
 
         {/* Severidad */}
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">
+          <label className="block text-sm font-medium text-gray-700 mb-2">
             <AlertTriangle className="w-4 h-4 inline mr-1" />
             Severidad
           </label>
-          <div className="flex gap-2">
+          <div className="grid grid-cols-4 gap-2">
             {Object.values(IncidentSeverity).map((severity) => (
               <label
                 key={severity}
-                className={`
-                  flex-1 px-3 py-2 rounded-lg border cursor-pointer text-center text-sm
-                  ${severity === 'low' ? 'border-green-300 hover:bg-green-50' : ''}
-                  ${severity === 'medium' ? 'border-yellow-300 hover:bg-yellow-50' : ''}
-                  ${severity === 'high' ? 'border-orange-300 hover:bg-orange-50' : ''}
-                  ${severity === 'critical' ? 'border-red-300 hover:bg-red-50' : ''}
-                `}
+                className="relative cursor-pointer"
               >
                 <input
                   type="radio"
                   {...register('severity')}
                   value={severity}
-                  className="sr-only"
+                  className="peer sr-only"
                 />
-                <span className="capitalize">{severity}</span>
+                <div className={`
+                  px-3 py-3 rounded-lg border-2 text-center text-sm font-medium transition-all
+                  peer-checked:ring-2 peer-checked:ring-offset-2
+                  ${severity === 'low' 
+                    ? 'border-green-400 bg-green-50 text-green-700 peer-checked:bg-green-500 peer-checked:text-white peer-checked:ring-green-500' 
+                    : ''}
+                  ${severity === 'medium' 
+                    ? 'border-yellow-400 bg-yellow-50 text-yellow-700 peer-checked:bg-yellow-500 peer-checked:text-white peer-checked:ring-yellow-500' 
+                    : ''}
+                  ${severity === 'high' 
+                    ? 'border-orange-400 bg-orange-50 text-orange-700 peer-checked:bg-orange-500 peer-checked:text-white peer-checked:ring-orange-500' 
+                    : ''}
+                  ${severity === 'critical' 
+                    ? 'border-red-400 bg-red-50 text-red-700 peer-checked:bg-red-500 peer-checked:text-white peer-checked:ring-red-500' 
+                    : ''}
+                  hover:shadow-md
+                `}>
+                  <span className="capitalize">{severity === 'low' ? 'Baja' : severity === 'medium' ? 'Media' : severity === 'high' ? 'Alta' : 'Crítica'}</span>
+                </div>
               </label>
             ))}
           </div>

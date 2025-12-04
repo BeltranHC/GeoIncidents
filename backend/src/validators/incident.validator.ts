@@ -103,8 +103,8 @@ export const incidentFiltersValidation = [
     .withMessage('Página debe ser un número entero positivo'),
   query('limit')
     .optional()
-    .isInt({ min: 1, max: 100 })
-    .withMessage('Límite debe ser entre 1 y 100'),
+    .isInt({ min: 1, max: 1000 })
+    .withMessage('Límite debe ser entre 1 y 1000'),
   query('north')
     .optional()
     .isFloat({ min: -90, max: 90 }),

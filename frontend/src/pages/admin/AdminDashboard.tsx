@@ -40,7 +40,6 @@ export const AdminDashboard: React.FC = () => {
   const navigate = useNavigate();
   const { logout } = useAuthStore();
   const [filters, setFilters] = useState<IncidentFilters>({
-    status: IncidentStatus.PENDING,
     page: 1,
     limit: 10,
   });
@@ -60,14 +59,16 @@ export const AdminDashboard: React.FC = () => {
   // Calcular estadísticas de los incidentes
   const { data: allIncidentsData } = useQuery({
     queryKey: ['all-incidents-stats'],
-    queryFn: () => incidentService.getAll({ limit: 1000 }),
+    queryFn: () => incidentService.getAll({ limit: 500 }),
+    staleTime: 0,
+    refetchOnMount: true,
   });
 
   const stats = {
-    pending: allIncidentsData?.incidents.filter(i => i.status === 'pending').length || 0,
-    validated: allIncidentsData?.incidents.filter(i => i.status === 'validated').length || 0,
-    rejected: allIncidentsData?.incidents.filter(i => i.status === 'rejected').length || 0,
-    total: allIncidentsData?.total || 0,
+    pending: allIncidentsData?.incidents?.filter(i => i.status === 'pending').length || 0,
+    validated: allIncidentsData?.incidents?.filter(i => i.status === 'validated').length || 0,
+    rejected: allIncidentsData?.incidents?.filter(i => i.status === 'rejected').length || 0,
+    total: allIncidentsData?.incidents?.length || 0,
   };
 
   const validateMutation = useMutation({
@@ -478,26 +479,72 @@ export const AdminDashboard: React.FC = () => {
               </div>
             )}
 
-            {selectedIncident.status === 'pending' && (
+            {selectedIncident.status === 'pending' ? (
               <div className="flex gap-3 pt-4 border-t">
                 <Button
                   variant="primary"
-                  className="flex-1"
-                  onClick={() => validateMutation.mutate(selectedIncident.id)}
+                  className="flex-1 bg-green-600 hover:bg-green-700"
+                  onClick={() => {
+                    if (confirm('¿Estás seguro de que deseas VALIDAR este incidente?')) {
+                      validateMutation.mutate(selectedIncident.id);
+                    }
+                  }}
                   isLoading={validateMutation.isPending}
                 >
                   <CheckCircle className="w-4 h-4 mr-2" />
-                  Validar
+                  Validar Incidente
                 </Button>
                 <Button
                   variant="danger"
                   className="flex-1"
-                  onClick={() => rejectMutation.mutate(selectedIncident.id)}
+                  onClick={() => {
+                    if (confirm('¿Estás seguro de que deseas RECHAZAR este incidente?')) {
+                      rejectMutation.mutate(selectedIncident.id);
+                    }
+                  }}
                   isLoading={rejectMutation.isPending}
                 >
                   <XCircle className="w-4 h-4 mr-2" />
-                  Rechazar
+                  Rechazar Incidente
                 </Button>
+              </div>
+            ) : (
+              <div className="pt-4 border-t">
+                <p className="text-sm text-gray-500 text-center mb-3">
+                  Este incidente ya fue {selectedIncident.status === 'validated' ? 'validado' : 'rechazado'}
+                </p>
+                <div className="flex gap-3">
+                  {selectedIncident.status !== 'validated' && (
+                    <Button
+                      variant="primary"
+                      className="flex-1 bg-green-600 hover:bg-green-700"
+                      onClick={() => {
+                        if (confirm('¿Cambiar estado a VALIDADO?')) {
+                          validateMutation.mutate(selectedIncident.id);
+                        }
+                      }}
+                      isLoading={validateMutation.isPending}
+                    >
+                      <CheckCircle className="w-4 h-4 mr-2" />
+                      Cambiar a Validado
+                    </Button>
+                  )}
+                  {selectedIncident.status !== 'rejected' && (
+                    <Button
+                      variant="danger"
+                      className="flex-1"
+                      onClick={() => {
+                        if (confirm('¿Cambiar estado a RECHAZADO?')) {
+                          rejectMutation.mutate(selectedIncident.id);
+                        }
+                      }}
+                      isLoading={rejectMutation.isPending}
+                    >
+                      <XCircle className="w-4 h-4 mr-2" />
+                      Cambiar a Rechazado
+                    </Button>
+                  )}
+                </div>
               </div>
             )}
           </div>

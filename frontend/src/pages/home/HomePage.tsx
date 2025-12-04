@@ -11,15 +11,31 @@ import {
   User,
   LogOut,
   Settings,
-  Shield
+  Shield,
+  X
 } from 'lucide-react';
 import { Map } from '../../components/map';
 import { Button } from '../../components/ui';
 import { ReportIncidentModal } from '../../components/incidents';
 import { incidentService, categoryService } from '../../services';
 import { useMapStore, useAuthStore } from '../../store';
-import { Incident } from '../../types';
+import { Incident, IncidentStatus, IncidentSeverity } from '../../types';
 import toast from 'react-hot-toast';
+
+// Traducciones
+const severityLabels: Record<string, string> = {
+  'low': 'Baja',
+  'medium': 'Media', 
+  'high': 'Alta',
+  'critical': 'Crítica'
+};
+
+const statusLabels: Record<string, string> = {
+  'pending': 'Pendiente',
+  'validated': 'Validado',
+  'rejected': 'Rechazado',
+  'resolved': 'Resuelto'
+};
 
 export const HomePage: React.FC = () => {
   const navigate = useNavigate();
@@ -36,13 +52,25 @@ export const HomePage: React.FC = () => {
 
   const [selectedIncident, setSelectedIncident] = useState<Incident | null>(null);
   const [showUserMenu, setShowUserMenu] = useState(false);
+  const [showFilters, setShowFilters] = useState(false);
+  const [showNotifications, setShowNotifications] = useState(false);
+  const [filterStatus, setFilterStatus] = useState<string>('');
+  const [filterSeverity, setFilterSeverity] = useState<string>('');
   const userMenuRef = useRef<HTMLDivElement>(null);
+  const filtersRef = useRef<HTMLDivElement>(null);
+  const notificationsRef = useRef<HTMLDivElement>(null);
 
   // Cerrar menú al hacer clic fuera
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (userMenuRef.current && !userMenuRef.current.contains(event.target as Node)) {
         setShowUserMenu(false);
+      }
+      if (filtersRef.current && !filtersRef.current.contains(event.target as Node)) {
+        setShowFilters(false);
+      }
+      if (notificationsRef.current && !notificationsRef.current.contains(event.target as Node)) {
+        setShowNotifications(false);
       }
     };
     document.addEventListener('mousedown', handleClickOutside);
@@ -109,20 +137,138 @@ export const HomePage: React.FC = () => {
             </Button>
 
             {/* Filters */}
-            <Button
-              variant="ghost"
-              size="sm"
-              leftIcon={<Filter className="w-4 h-4" />}
-            >
-              <span className="hidden sm:inline">Filtros</span>
-            </Button>
+            <div className="relative" ref={filtersRef}>
+              <Button
+                variant={showFilters ? 'primary' : 'ghost'}
+                size="sm"
+                onClick={() => setShowFilters(!showFilters)}
+                leftIcon={<Filter className="w-4 h-4" />}
+              >
+                <span className="hidden sm:inline">Filtros</span>
+              </Button>
+              
+              {/* Dropdown de Filtros */}
+              {showFilters && (
+                <div className="absolute right-0 mt-2 w-64 bg-white rounded-lg shadow-lg border border-gray-200 p-4 z-50">
+                  <div className="flex justify-between items-center mb-3">
+                    <h3 className="font-semibold text-gray-900">Filtros</h3>
+                    <button onClick={() => setShowFilters(false)} className="text-gray-400 hover:text-gray-600">
+                      <X className="w-4 h-4" />
+                    </button>
+                  </div>
+                  
+                  <div className="space-y-3">
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-1">Estado</label>
+                      <select 
+                        value={filterStatus}
+                        onChange={(e) => setFilterStatus(e.target.value)}
+                        className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm"
+                      >
+                        <option value="">Todos</option>
+                        <option value="pending">Pendiente</option>
+                        <option value="validated">Validado</option>
+                        <option value="rejected">Rechazado</option>
+                      </select>
+                    </div>
+                    
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-1">Severidad</label>
+                      <select 
+                        value={filterSeverity}
+                        onChange={(e) => setFilterSeverity(e.target.value)}
+                        className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm"
+                      >
+                        <option value="">Todas</option>
+                        <option value="low">Baja</option>
+                        <option value="medium">Media</option>
+                        <option value="high">Alta</option>
+                        <option value="critical">Crítica</option>
+                      </select>
+                    </div>
+                    
+                    <div className="flex gap-2 pt-2">
+                      <Button 
+                        variant="ghost" 
+                        size="sm" 
+                        className="flex-1"
+                        onClick={() => {
+                          setFilterStatus('');
+                          setFilterSeverity('');
+                        }}
+                      >
+                        Limpiar
+                      </Button>
+                      <Button 
+                        variant="primary" 
+                        size="sm" 
+                        className="flex-1"
+                        onClick={() => {
+                          setShowFilters(false);
+                          toast.success('Filtros aplicados');
+                        }}
+                      >
+                        Aplicar
+                      </Button>
+                    </div>
+                  </div>
+                </div>
+              )}
+            </div>
 
             {isAuthenticated ? (
               <>
-                <button className="p-2 rounded-lg hover:bg-gray-100 relative">
-                  <Bell className="w-5 h-5 text-gray-600" />
-                  <span className="absolute top-1 right-1 w-2 h-2 bg-danger-500 rounded-full"></span>
-                </button>
+                <div className="relative" ref={notificationsRef}>
+                  <button 
+                    onClick={() => setShowNotifications(!showNotifications)}
+                    className="p-2 rounded-lg hover:bg-gray-100 relative"
+                  >
+                    <Bell className="w-5 h-5 text-gray-600" />
+                    <span className="absolute top-1 right-1 w-2 h-2 bg-danger-500 rounded-full"></span>
+                  </button>
+                  
+                  {/* Dropdown de Notificaciones */}
+                  {showNotifications && (
+                    <div className="absolute right-0 mt-2 w-80 bg-white rounded-lg shadow-lg border border-gray-200 z-50">
+                      <div className="flex justify-between items-center p-3 border-b border-gray-100">
+                        <h3 className="font-semibold text-gray-900">Notificaciones</h3>
+                        <button onClick={() => setShowNotifications(false)} className="text-gray-400 hover:text-gray-600">
+                          <X className="w-4 h-4" />
+                        </button>
+                      </div>
+                      
+                      <div className="max-h-80 overflow-y-auto">
+                        <div className="p-3 hover:bg-gray-50 border-b border-gray-100">
+                          <div className="flex items-start gap-3">
+                            <div className="w-8 h-8 rounded-full bg-warning-100 flex items-center justify-center flex-shrink-0">
+                              <AlertTriangle className="w-4 h-4 text-warning-600" />
+                            </div>
+                            <div>
+                              <p className="text-sm text-gray-900">Nuevo incidente reportado cerca de tu ubicación</p>
+                              <p className="text-xs text-gray-500 mt-1">Hace 5 minutos</p>
+                            </div>
+                          </div>
+                        </div>
+                        
+                        <div className="p-3 hover:bg-gray-50 border-b border-gray-100">
+                          <div className="flex items-start gap-3">
+                            <div className="w-8 h-8 rounded-full bg-success-100 flex items-center justify-center flex-shrink-0">
+                              <Shield className="w-4 h-4 text-success-600" />
+                            </div>
+                            <div>
+                              <p className="text-sm text-gray-900">Tu reporte fue validado por un administrador</p>
+                              <p className="text-xs text-gray-500 mt-1">Hace 2 horas</p>
+                            </div>
+                          </div>
+                        </div>
+                        
+                        <div className="p-3 text-center text-sm text-gray-500">
+                          No hay más notificaciones
+                        </div>
+                      </div>
+                    </div>
+                  )}
+                </div>
                 <div className="relative" ref={userMenuRef}>
                   <button 
                     onClick={() => setShowUserMenu(!showUserMenu)}
@@ -238,14 +384,20 @@ export const HomePage: React.FC = () => {
             <p className="text-sm text-gray-600 mb-3">{selectedIncident.description}</p>
             <div className="flex gap-2 mb-3">
               <span className={`severity-badge severity-${selectedIncident.severity}`}>
-                {selectedIncident.severity}
+                {severityLabels[selectedIncident.severity] || selectedIncident.severity}
               </span>
               <span className={`status-badge status-${selectedIncident.status}`}>
-                {selectedIncident.status}
+                {statusLabels[selectedIncident.status] || selectedIncident.status}
               </span>
             </div>
             <p className="text-xs text-gray-400">
-              {new Date(selectedIncident.incidentDate).toLocaleString()}
+              {new Date(selectedIncident.incidentDate).toLocaleString('es-PE', { 
+                day: 'numeric', 
+                month: 'long', 
+                year: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit'
+              })}
             </p>
           </div>
         )}

@@ -2,6 +2,7 @@ import React, { useEffect, useRef } from 'react';
 import { MapContainer, TileLayer, Marker, Popup, useMap, useMapEvents } from 'react-leaflet';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
+import 'leaflet.heat';
 import { Incident, Category, HeatmapPoint } from '../../types';
 import { useMapStore } from '../../store';
 
@@ -53,23 +54,42 @@ const MapEvents: React.FC<{ onMapClick?: (lat: number, lng: number) => void }> =
   return null;
 };
 
-// Componente para el mapa de calor
+// Componente para el mapa de calor con colores por severidad
 const HeatmapLayer: React.FC<{ points: HeatmapPoint[] }> = ({ points }) => {
   const map = useMap();
   
   useEffect(() => {
     if (points.length === 0) return;
     
-    // @ts-ignore - leaflet.heat types
-    const heat = (L as any).heatLayer(
-      points.map(p => [p.lat, p.lng, p.intensity]),
-      { radius: 25, blur: 15, maxZoom: 17 }
-    );
+    // Colores por severidad
+    const severityColors: Record<string, string> = {
+      'low': '#22c55e',      // verde
+      'medium': '#f97316',   // naranja (media)
+      'high': '#dc2626',     // rojo oscuro (alta)
+      'critical': '#7f1d1d', // rojo muy oscuro (crítica)
+    };
     
-    heat.addTo(map);
+    // Crear círculos para cada punto con su color de severidad
+    const circles: L.Circle[] = [];
+    
+    points.forEach(point => {
+      const color = severityColors[point.severity || 'medium'] || '#eab308';
+      const radius = point.intensity * 150; // Radio basado en intensidad
+      
+      const circle = L.circle([point.lat, point.lng], {
+        color: color,
+        fillColor: color,
+        fillOpacity: 0.5,
+        radius: radius,
+        weight: 2,
+      });
+      
+      circle.addTo(map);
+      circles.push(circle);
+    });
     
     return () => {
-      map.removeLayer(heat);
+      circles.forEach(circle => map.removeLayer(circle));
     };
   }, [map, points]);
   
@@ -144,14 +164,24 @@ export const Map: React.FC<MapProps> = ({
                 <span
                   className={`severity-badge severity-${incident.severity}`}
                 >
-                  {incident.severity}
+                  {{
+                    'low': 'Baja',
+                    'medium': 'Media',
+                    'high': 'Alta',
+                    'critical': 'Crítica'
+                  }[incident.severity] || incident.severity}
                 </span>
                 <span className={`status-badge status-${incident.status}`}>
-                  {incident.status}
+                  {{
+                    'pending': 'Pendiente',
+                    'validated': 'Validado',
+                    'rejected': 'Rechazado',
+                    'resolved': 'Resuelto'
+                  }[incident.status] || incident.status}
                 </span>
               </div>
               <p className="text-xs text-gray-400 mt-2">
-                {new Date(incident.incidentDate).toLocaleDateString()}
+                {new Date(incident.incidentDate).toLocaleDateString('es-PE', { day: 'numeric', month: 'long', year: 'numeric' })}
               </p>
             </div>
           </Popup>

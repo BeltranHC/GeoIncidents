@@ -46,113 +46,113 @@ const usersData = [
   },
 ];
 
-// Datos de incidentes de ejemplo (Ciudad de México)
+// Datos de incidentes de ejemplo (Puno, Perú)
 const incidentsData = [
   {
-    title: 'Robo de celular en el metro',
-    description: 'Me robaron el celular en la estación Balderas durante hora pico. El sujeto vestía de negro.',
-    latitude: 19.4269,
-    longitude: -99.1486,
-    address: 'Metro Balderas, Ciudad de México',
+    title: 'Robo de celular en el centro',
+    description: 'Me robaron el celular cerca de la Plaza de Armas durante la noche. Dos sujetos en moto.',
+    latitude: -15.8402,
+    longitude: -70.0219,
+    address: 'Plaza de Armas, Puno',
     severity: IncidentSeverity.HIGH,
     status: IncidentStatus.VALIDATED,
     isAnonymous: false,
     categoryName: 'Robo',
   },
   {
-    title: 'Grafiti en edificio histórico',
-    description: 'Rayaron la fachada del edificio de correos con pintura roja.',
-    latitude: 19.4352,
-    longitude: -99.1412,
-    address: 'Palacio de Correos, Centro Histórico',
+    title: 'Grafiti en el malecón',
+    description: 'Rayaron las bancas del malecón ecoturístico con pintura spray.',
+    latitude: -15.8367,
+    longitude: -70.0178,
+    address: 'Malecón Ecoturístico Bahía de los Incas',
     severity: IncidentSeverity.MEDIUM,
-    status: IncidentStatus.VALIDATED,
+    status: IncidentStatus.PENDING,
     isAnonymous: false,
     categoryName: 'Vandalismo',
   },
   {
-    title: 'Choque múltiple en Reforma',
-    description: 'Tres vehículos involucrados, hay tráfico intenso. Se requiere apoyo vial.',
-    latitude: 19.4284,
-    longitude: -99.1676,
-    address: 'Paseo de la Reforma 222',
+    title: 'Accidente vehicular en Av. El Sol',
+    description: 'Colisión entre combi y mototaxi. Hay tráfico intenso en la zona.',
+    latitude: -15.8425,
+    longitude: -70.0256,
+    address: 'Avenida El Sol, Puno',
     severity: IncidentSeverity.HIGH,
-    status: IncidentStatus.PENDING,
+    status: IncidentStatus.VALIDATED,
     isAnonymous: false,
     categoryName: 'Accidente',
   },
   {
-    title: 'Poste de luz fundido',
-    description: 'Lleva más de una semana sin funcionar, zona muy oscura de noche.',
-    latitude: 19.4195,
-    longitude: -99.1628,
-    address: 'Colonia Juárez, calle Hamburgo',
+    title: 'Poste de luz sin funcionar',
+    description: 'Poste de alumbrado público malogrado hace una semana cerca del mercado.',
+    latitude: -15.8389,
+    longitude: -70.0198,
+    address: 'Jr. Arequipa, cerca del Mercado Central',
     severity: IncidentSeverity.LOW,
-    status: IncidentStatus.VALIDATED,
+    status: IncidentStatus.PENDING,
     isAnonymous: false,
     categoryName: 'Alumbrado',
   },
   {
-    title: 'Asalto a peatón',
-    description: 'Reporto asalto a mano armada cerca del parque. Dos sujetos en motocicleta.',
-    latitude: 19.4124,
-    longitude: -99.1737,
-    address: 'Parque México, Condesa',
+    title: 'Asalto cerca del terminal',
+    description: 'Reporto asalto a mano armada cerca del terminal terrestre. Sujeto con cuchillo.',
+    latitude: -15.8456,
+    longitude: -70.0312,
+    address: 'Terminal Terrestre de Puno',
     severity: IncidentSeverity.CRITICAL,
-    status: IncidentStatus.PENDING,
+    status: IncidentStatus.VALIDATED,
     isAnonymous: true,
     categoryName: 'Robo',
   },
   {
-    title: 'Daño a parada de autobús',
-    description: 'Rompieron los vidrios de la parada durante la noche.',
-    latitude: 19.4356,
-    longitude: -99.1534,
-    address: 'Av. Insurgentes Sur',
+    title: 'Daño a paradero de buses',
+    description: 'Destruyeron el techo del paradero durante la madrugada.',
+    latitude: -15.8378,
+    longitude: -70.0234,
+    address: 'Av. Floral, Puno',
     severity: IncidentSeverity.LOW,
     status: IncidentStatus.VALIDATED,
     isAnonymous: false,
     categoryName: 'Vandalismo',
   },
   {
-    title: 'Ruido excesivo de construcción',
-    description: 'Construcción trabajando fuera de horario permitido, ruido molesto.',
-    latitude: 19.4321,
-    longitude: -99.1543,
-    address: 'Colonia Roma Norte',
+    title: 'Ruido excesivo de discoteca',
+    description: 'Discoteca con música a alto volumen hasta altas horas de la madrugada.',
+    latitude: -15.8412,
+    longitude: -70.0187,
+    address: 'Jr. Lima, Centro de Puno',
     severity: IncidentSeverity.MEDIUM,
     status: IncidentStatus.PENDING,
     isAnonymous: false,
     categoryName: 'Ruido',
   },
   {
-    title: 'Punto de venta de drogas',
-    description: 'Se observa actividad sospechosa de venta de sustancias en la esquina.',
-    latitude: 19.4089,
-    longitude: -99.1658,
-    address: 'Colonia Roma Sur',
+    title: 'Venta de sustancias ilícitas',
+    description: 'Se observa venta de drogas cerca del parque Pino.',
+    latitude: -15.8395,
+    longitude: -70.0211,
+    address: 'Parque Pino, Puno',
     severity: IncidentSeverity.HIGH,
-    status: IncidentStatus.PENDING,
+    status: IncidentStatus.VALIDATED,
     isAnonymous: true,
     categoryName: 'Drogas',
   },
   {
-    title: 'Acoso en transporte público',
-    description: 'Hombre acosando verbalmente a mujeres en la estación de metrobús.',
-    latitude: 19.4234,
-    longitude: -99.1589,
-    address: 'Metrobús Insurgentes',
+    title: 'Acoso callejero reportado',
+    description: 'Sujeto acosando verbalmente a mujeres cerca de la universidad.',
+    latitude: -15.8345,
+    longitude: -70.0245,
+    address: 'Universidad Nacional del Altiplano',
     severity: IncidentSeverity.MEDIUM,
-    status: IncidentStatus.VALIDATED,
+    status: IncidentStatus.PENDING,
     isAnonymous: false,
     categoryName: 'Acoso',
   },
   {
-    title: 'Bache peligroso',
-    description: 'Bache grande que ya ha causado daños a varios vehículos.',
-    latitude: 19.4178,
-    longitude: -99.1702,
-    address: 'Avenida Chapultepec',
+    title: 'Bache peligroso en pista',
+    description: 'Bache grande en la vía que ya ha causado daños a varios vehículos.',
+    latitude: -15.8432,
+    longitude: -70.0267,
+    address: 'Av. Laykakota, Puno',
     severity: IncidentSeverity.MEDIUM,
     status: IncidentStatus.PENDING,
     isAnonymous: false,
@@ -219,14 +219,14 @@ export async function seedDatabase(): Promise<void> {
     }
     logger.info(`✅ ${users.length} usuarios procesados`);
 
-    // Verificar si ya hay incidentes
+    // Solo crear incidentes de ejemplo si no hay ninguno en la base de datos
     const incidentCount = await Incident.count();
     if (incidentCount === 0) {
-      // Crear incidentes
-      logger.info('🚨 Creando incidentes de ejemplo...');
+      // Crear incidentes de ejemplo solo si la base de datos está vacía
+      logger.info('🚨 Creando incidentes de ejemplo en Puno...');
       
       const citizenUser = users.find(u => u.email === 'usuario@test.com');
-      
+        
       for (const incidentData of incidentsData) {
         const category = categories.find(c => c.name === incidentData.categoryName);
         if (category) {
@@ -245,9 +245,9 @@ export async function seedDatabase(): Promise<void> {
           });
         }
       }
-      logger.info(`✅ ${incidentsData.length} incidentes creados`);
+      logger.info(`✅ ${incidentsData.length} incidentes de ejemplo creados`);
     } else {
-      logger.info(`ℹ️ Ya existen ${incidentCount} incidentes, saltando creación`);
+      logger.info(`📊 Ya existen ${incidentCount} incidentes en la base de datos, no se crean nuevos de ejemplo`);
     }
 
     logger.info('🎉 Seed completado exitosamente');

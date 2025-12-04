@@ -86,12 +86,13 @@ export const incidentService = {
       if (filters.endDate) params.append('endDate', filters.endDate);
     }
 
-    const response = await api.get<ApiResponse<Array<{ latitude: number; longitude: number; intensity: number }>>>(`/incidents/heatmap?${params.toString()}`);
+    const response = await api.get<ApiResponse<Array<{ latitude: number; longitude: number; intensity: number; severity: string }>>>(`/incidents/heatmap?${params.toString()}`);
     
     return (response.data.data || []).map(point => ({
       lat: point.latitude,
       lng: point.longitude,
       intensity: point.intensity,
+      severity: point.severity,
     }));
   },
 

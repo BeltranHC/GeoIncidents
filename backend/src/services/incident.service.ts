@@ -261,6 +261,7 @@ class IncidentService {
       latitude: Number(incident.latitude),
       longitude: Number(incident.longitude),
       intensity: severityToIntensity[incident.severity],
+      severity: incident.severity,
     }));
   }
 

@@ -34,8 +34,8 @@ interface MapState {
   setReportLocation: (location: [number, number] | null) => void;
 }
 
-const DEFAULT_CENTER: [number, number] = [19.4326, -99.1332]; // Ciudad de México
-const DEFAULT_ZOOM = 13;
+const DEFAULT_CENTER: [number, number] = [-15.8402, -70.0219]; // Puno, Perú
+const DEFAULT_ZOOM = 14;
 
 const DEFAULT_FILTERS: IncidentFilters = {
   page: 1,
